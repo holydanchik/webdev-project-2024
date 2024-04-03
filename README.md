@@ -7,7 +7,6 @@ Budget Planning is a web application developed using Angular and Django to help 
 - **User Authentication**: Users can sign up, log in, and securely authenticate themselves to access the budget planning features.
 - **Budget Creation**: Users can create multiple budgets based on their income, expenses, and savings goals.
 - **Expense Tracking**: Users can add, edit, and delete expenses within their budgets, helping them keep track of their spending habits.
-- **Visual Representation**: Budget data is presented in easy-to-understand charts and graphs, providing users with a visual representation of their financial status.
 - **Goal Setting**: Users can set financial goals and track their progress towards achieving them.
 - **Responsive Design**: The application is designed to be responsive and accessible across various devices, including desktops, tablets, and mobile phones.
 
