@@ -53,5 +53,5 @@ Budget Planning is a web application developed using Angular and Django to help 
 - [Django Documentation](https://docs.djangoproject.com/)
 - [Chart.js Documentation](https://www.chartjs.org/docs/)
 
-- # Team members
+# Team members
 - ...
