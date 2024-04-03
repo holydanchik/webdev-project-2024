@@ -13,6 +13,9 @@ Budget Planning is a web application developed using Angular and Django to help 
 
 - **Frontend**: Angular
 - **Backend**: Django
+- **Authentication**: JWT (JSON Web Tokens)
+- **...** 
+
 
 ## Installation
 
