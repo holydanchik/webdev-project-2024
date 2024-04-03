@@ -8,15 +8,11 @@ Budget Planning is a web application developed using Angular and Django to help 
 - **Budget Creation**: Users can create multiple budgets based on their income, expenses, and savings goals.
 - **Expense Tracking**: Users can add, edit, and delete expenses within their budgets, helping them keep track of their spending habits.
 - **Goal Setting**: Users can set financial goals and track their progress towards achieving them.
-- **Responsive Design**: The application is designed to be responsive and accessible across various devices, including desktops, tablets, and mobile phones.
 
 ## Technologies Used
 
 - **Frontend**: Angular
 - **Backend**: Django
-- **Database**: [Specify the database system used, e.g., PostgreSQL]
-- **Authentication**: [Specify the authentication mechanism, e.g., JWT (JSON Web Tokens)]
-- **Charting Library**: [Specify the library used for charting, e.g., Chart.js]
 
 ## Installation
 
@@ -47,20 +43,6 @@ Budget Planning is a web application developed using Angular and Django to help 
 3. Add, edit, or delete expenses within the created budget.
 4. Set financial goals and track progress towards achieving them.
 5. View visual representations of budget data using charts and graphs.
-
-## Contributing
-
-Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature-name`).
-3. Commit your changes (`git commit -am 'Add some feature'`).
-4. Push to the branch (`git push origin feature/your-feature-name`).
-5. Create a new Pull Request.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
 
 ## Acknowledgements
 
