@@ -1,4 +1,4 @@
-# Budget Planning
+# Budget Planner
 
 Budget Planning is a web application developed using Angular and Django to help users plan and manage their budgets effectively.
 
