@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import User, BudgetItem, BudgetCategory, Token
+from .models import User, BudgetItem, BudgetCategory
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = '__all__'
 
 class BudgetCategorySerializer(serializers.ModelSerializer):
     class Meta:

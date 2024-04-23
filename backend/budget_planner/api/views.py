@@ -10,7 +10,7 @@ from rest_framework.authentication import TokenAuthentication
 class BudgetItemCreateView(generics.CreateAPIView):
     queryset = BudgetItem.objects.all()
     serializer_class = BudgetItemSerializer
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
@@ -21,19 +21,19 @@ class BudgetItemCreateView(generics.CreateAPIView):
 class BudgetItemRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BudgetItem.objects.all()
     serializer_class = BudgetItemSerializer
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
 
 class BudgetCategoryListView(generics.ListAPIView):
     queryset = BudgetCategory.objects.all()
     serializer_class = BudgetCategorySerializer
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
 
 class BudgetItemUpdateView(generics.UpdateAPIView):
     queryset = BudgetItem.objects.all()
     serializer_class = BudgetItemSerializer
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
