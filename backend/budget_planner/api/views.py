@@ -13,11 +13,9 @@ class BudgetItemCreateView(generics.CreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    def perform_create(self, serializer):
+        # Associating the current user with the created budget item
+        serializer.save(owner=self.request.user)
 
 
 class BudgetItemRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):

@@ -12,6 +12,8 @@ class BudgetCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class BudgetItemSerializer(serializers.ModelSerializer):
+
+    owner = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = BudgetItem
         fields = '__all__'
