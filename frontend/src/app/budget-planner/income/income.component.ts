@@ -3,46 +3,55 @@ import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+interface Income {
+  source: string;
+  amount: number;
+  editing?: boolean;
+  backup?: Income;
+}
+
 @Component({
   selector: 'app-income',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './income.component.html',
-  styleUrl: './income.component.scss'
+  styleUrl: './income.component.scss',
 })
+
 export class IncomeComponent {
   incomeForm: any;
-  selectedMonth: any;
-  januaryIncomes: any[] = [
-    { source: 'Salary', amount: 5000, investments: '401(k)' },
-    { source: 'Freelancing', amount: 1000, investments: 'Stocks' },
+  selectedMonth: string;
+  januaryIncomes: Income[] = [
+    { source: 'Salary', amount: 5000 },
+    { source: 'Freelancing', amount: 1000 },
   ];
-  februaryIncomes: any[] = [
-    { source: 'Salary', amount: 5500, investments: '401(k)' },
-    { source: 'Rental Income', amount: 700, investments: 'Real Estate' },
+  februaryIncomes: Income[] = [
+    { source: 'Salary', amount: 5500 },
+    { source: 'Rental Income', amount: 700 },
   ];
-  marchIncomes: any[] = [
-    { source: 'Salary', amount: 5200, investments: '401(k)' },
-    { source: 'Freelancing', amount: 1200, investments: 'Stocks' },
-    { source: 'Rental Income', amount: 600, investments: 'Real Estate' },
+  marchIncomes: Income[] = [
+    { source: 'Salary', amount: 5200 },
+    { source: 'Freelancing', amount: 1200 },
+    { source: 'Rental Income', amount: 600 },
   ];
-  monthSelected:boolean=false;
-  constructor(public fb: FormBuilder,public router:Router) { 
+  monthSelected: boolean = false;
+  constructor(public fb: FormBuilder, public router: Router) {
     const currentDate = new Date();
-    this.selectedMonth = currentDate.toLocaleString('default', { month: 'long' });
+    this.selectedMonth = currentDate.toLocaleString('default', {
+      month: 'long',
+    });
   }
   ngOnInit(): void {
     this.incomeForm = this.fb.group({
       month: ['', Validators.required],
       source: ['', Validators.required],
       amount: ['', Validators.required],
-      investments: ['', Validators.required]
     });
   }
 
   onChange(event: any) {
-    this.selectedMonth = event.target.value
-    this.monthSelected=true;
+    this.selectedMonth = event.target.value;
+    this.monthSelected = true;
     this.getFilteredIncomes();
   }
 
@@ -54,7 +63,7 @@ export class IncomeComponent {
     return totalIncome;
   }
 
-  getIncomesForMonth(month: string): any[] {
+  getIncomesForMonth(month: string): Income[] {
     switch (month) {
       case 'January':
         return this.januaryIncomes;
@@ -68,7 +77,7 @@ export class IncomeComponent {
   }
 
   getFilteredIncomes() {
-    let filteredIncomes: any[] = [];
+    let filteredIncomes: Income[] = [];
     switch (this.selectedMonth) {
       case 'January':
         filteredIncomes = [...this.januaryIncomes];
@@ -84,6 +93,31 @@ export class IncomeComponent {
     }
     return filteredIncomes;
   }
+
+  editIncome(income: Income) {
+    income.editing = true;
+    income.backup = { ...income };
+  }
+
+  saveIncome(income: Income) {
+    income.editing = false;
+    delete income.backup;
+  }
+
+  cancelEdit(income: Income) {
+    income.editing = false;
+    Object.assign(income, income.backup);
+    delete income.backup;
+  }
+
+  deleteIncome(income: Income) {
+    let monthIncomes = this.getIncomesForMonth(this.selectedMonth);
+    const index = monthIncomes.indexOf(income);
+    if (index !== -1) {
+      monthIncomes.splice(index, 1);
+    }
+  }
+
   onSubmit() {
     if (this.incomeForm.valid) {
       const newIncome = this.incomeForm.value;
@@ -101,13 +135,17 @@ export class IncomeComponent {
           break;
       }
       this.incomeForm.reset();
-      this.incomeForm.patchValue({ month: '', source: '', amount: '', investments: '' });
+      this.incomeForm.patchValue({
+        month: '',
+        source: '',
+        amount: '',
+      });
     }
   }
 
-  saveForm() {
-    console.log("Form saved!");
-  }
+  // saveForm() {
+  //   console.log('Form saved!');
+  // }
 
   onBack() {
     this.router.navigate(['']);

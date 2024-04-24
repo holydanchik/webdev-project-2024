@@ -46,12 +46,33 @@
                 <tr>
                     <th>Expense Type</th>
                     <th>Amount</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let expense of getFilteredExpenses()">
-                    <td>{{ expense.expenseType }}</td>
-                    <td>{{ expense.expenseAmount }}</td>
+                    <td *ngIf="!expense.editing">{{ expense.expenseType }}</td>
+                    <td *ngIf="!expense.editing">{{ expense.expenseAmount }}</td>
+                    <td *ngIf="!expense.editing" class="btn-actions">
+                        <button class="btn btn-sm btn-primary mr-2" (click)="editExpense(expense)">Edit</button>
+                        <button class="btn btn-sm btn-danger" (click)="deleteExpense(expense)">Delete</button>
+                    </td>
+                    <td *ngIf="expense.editing">
+                        <select formControlName="expenseType" class="form-control">
+                            <option value="Rent">Rent</option>
+                            <option value="Groceries">Groceries</option>
+                            <option value="Utilities">Utilities</option>
+                        </select>
+                    </td>
+                    <td *ngIf="expense.editing">
+                        <input type="number" formControlName="expenseAmount" class="form-control"
+                            placeholder="Enter amount">
+                    </td>
+                    <td *ngIf="expense.editing" class="btn-actions">
+                        <button class="btn btn-sm btn-primary mr-2" (click)="saveExpense(expense)">Save</button>
+                        <button class="btn btn-sm btn-secondary" (click)="cancelEdit(expense)">Cancel</button>
+                    </td>
+
                 </tr>
             </tbody>
         </table>
@@ -59,7 +80,7 @@
             <button class="btn btn-primary" (click)="onBack()">Back</button>
             <div class="form-group">
             </div>
-            <button class="btn btn-primary" (click)="saveForm()">Save</button>
+            <!-- <button class="btn btn-primary" (click)="saveForm()">Save</button> -->
         </div>
     </div>
 </div>

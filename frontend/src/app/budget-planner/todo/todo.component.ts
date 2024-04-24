@@ -3,40 +3,43 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { Expense } from '../expense/expense.component';
 
 @Component({
   selector: 'app-todo',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, MatIconModule],
   templateUrl: './todo.component.html',
-  styleUrl: './todo.component.scss'
+  styleUrl: './todo.component.scss',
 })
 export class TodoComponent {
   todoForm: any;
-  selectedMonth: any;
-  expenses: { month: string, expenseAmount: number }[] = [
+  selectedMonth: string;
+  expenses: { month: string; expenseAmount: number }[] = [
     { month: 'January', expenseAmount: 1500 },
     { month: 'February', expenseAmount: 2000 },
-    { month: 'March', expenseAmount: 1800 }
+    { month: 'March', expenseAmount: 1800 },
   ];
   monthSelected: boolean = false;
-  januaryExpense: any[] = [
-    { expenseType: 'Recharge', expenseAmount: 1000 },
-    { expenseType: 'Light Bills', expenseAmount: 500 },
+  januaryExpense: Expense[] = [
+    { expenseType: 'Recharge', expenseAmount: 1000, editing: false },
+    { expenseType: 'Light Bills', expenseAmount: 500, editing: false },
   ];
 
-  februaryExpense: any[] = [
+  februaryExpense: Expense[] = [
     { expenseType: 'Essentials', expenseAmount: 200 },
-    { expenseType: 'Light Bills', expenseAmount: 400 }
+    { expenseType: 'Light Bills', expenseAmount: 400 },
   ];
 
-  marchExpense: any[] = [
+  marchExpense: Expense[] = [
     { expenseType: 'Recharge', expenseAmount: 1100 },
-    { expenseType: 'Essentials', expenseAmount: 250 }
+    { expenseType: 'Essentials', expenseAmount: 250 },
   ];
   constructor(private fb: FormBuilder, private router: Router) {
     const currentDate = new Date();
-    const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
+    const currentMonth = currentDate.toLocaleString('default', {
+      month: 'long',
+    });
     this.selectedMonth = currentMonth;
   }
 
@@ -44,7 +47,7 @@ export class TodoComponent {
     this.todoForm = this.fb.group({
       month: ['', Validators.required],
       expenseType: ['', Validators.required],
-      expenseAmount: ['', Validators.required]
+      expenseAmount: ['', Validators.required],
     });
   }
 
@@ -65,7 +68,11 @@ export class TodoComponent {
           break;
       }
       this.todoForm.reset();
-      this.todoForm.patchValue({ month: '', expenseType: '', expenseAmount: '' });
+      this.todoForm.patchValue({
+        month: '',
+        expenseType: '',
+        expenseAmount: '',
+      });
     }
   }
 
@@ -76,7 +83,7 @@ export class TodoComponent {
   }
 
   getFilteredExpenses() {
-    let filteredExpense: any[] = [];
+    let filteredExpense: Expense[] = [];
     switch (this.selectedMonth) {
       case 'January':
         filteredExpense = [...this.januaryExpense];
@@ -93,6 +100,30 @@ export class TodoComponent {
     return filteredExpense;
   }
 
+  editTodo(todo: Expense) {
+    todo.editing = true;
+    todo.backup = {...todo};
+  }
+
+  saveTodo(todo: Expense) {
+    todo.editing = false;
+    delete todo.backup;
+  }
+
+  cancelEdit(todo: Expense) {
+    todo.editing = false;
+    Object.assign(todo, todo.backup)
+    delete todo.backup
+  }
+
+  deleteTodo(todo: Expense) {
+    const filteredExpenses = this.getFilteredExpenses();
+    const index = filteredExpenses.indexOf(todo);
+    if (index !== -1) {
+      filteredExpenses.splice(index, 1);
+    }
+  }
+
   calculateTotalExpense(month: string): number {
     let totalExpense = 0;
     for (const income of this.gettodoFormonth(month)) {
@@ -101,7 +132,7 @@ export class TodoComponent {
     return totalExpense;
   }
 
-  gettodoFormonth(month: string): any[] {
+  gettodoFormonth(month: string): Expense[] {
     switch (month) {
       case 'January':
         return this.januaryExpense;
@@ -114,23 +145,11 @@ export class TodoComponent {
     }
   }
 
-  onSave() {
-    if (this.todoForm.valid) {
-      const incomeData = this.todoForm.value;
-      this.todoForm.reset({ month: this.selectedMonth });
-      this.getFilteredExpenses();
-    }
-  }
-
-  saveForm() {
-    console.log("Form saved!");
-  }
+  // saveForm() {
+  //   console.log('Form saved!');
+  // }
 
   onBack() {
     this.router.navigate(['']);
-  }
-
-  toggleSelection(expense: any) {
-    expense.selected = !expense.selected;
   }
 }
