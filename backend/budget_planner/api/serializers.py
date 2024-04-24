@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import User, BudgetItem, BudgetCategory
+from .models import BudgetItem, BudgetCategory, CustomUser
+
 
 # class UserSerializer(serializers.ModelSerializer):
 #     class Meta:
@@ -13,7 +14,7 @@ class BudgetCategorySerializer(serializers.ModelSerializer):
 
 class BudgetItemSerializer(serializers.ModelSerializer):
 
-    owner = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    owner = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
     class Meta:
         model = BudgetItem
         fields = '__all__'
