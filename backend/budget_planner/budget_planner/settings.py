@@ -127,6 +127,9 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
+# Set token expiration time to 30 minutes (1800 seconds)
+TOKEN_EXPIRATION = 1800  # 30 minutes
+
 USE_I18N = True
 
 USE_TZ = True
