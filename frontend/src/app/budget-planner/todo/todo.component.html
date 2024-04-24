@@ -42,22 +42,38 @@
                 <tr>
                     <th>Transaction Type</th>
                     <th>Amount</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let todoTrans of getFilteredExpenses()">
-                    <td [ngClass]="{'strikeout': todoTrans.selected}" (click)="toggleSelection(todoTrans)">
-                        {{ todoTrans.expenseType }}
+                <tr *ngFor="let todo of getFilteredExpenses(); let i = index">
+                    <td *ngIf="!todo.editing">{{ todo.expenseType }}</td>
+                    <td *ngIf="!todo.editing">{{ todo.expenseAmount }}</td>
+                    <td *ngIf="!todo.editing" class="btn-actions">
+                        <button class="btn btn-sm btn-primary mr-2" (click)="editTodo(todo)">Edit</button>
+                        <button class="btn btn-sm btn-danger" (click)="deleteTodo(todo)">Delete</button>
                     </td>
-                    <td>{{ todoTrans.expenseAmount }}</td>
+                    <td *ngIf="todo.editing">
+                        <input type="text" formControlName="expenseType" class="form-control"
+                            placeholder="Enter Transaction Type" [(ngModel)]="todo.expenseType">
+                    </td>
+                    <td *ngIf="todo.editing">
+                        <input type="number" formControlName="expenseAmount" class="form-control"
+                            placeholder="Enter amount" [(ngModel)]="todo.expenseAmount">
+                    </td>
+                    <td *ngIf="todo.editing" class="btn-actions">
+                        <button class="btn btn-sm btn-primary mr-2" (click)="saveTodo(todo)">Save</button>
+                        <button class="btn btn-sm btn-secondary" (click)="cancelEdit(todo)">Cancel</button>
+                    </td>
                 </tr>
+
             </tbody>
         </table>
         <div class="input-form">
             <button class="btn btn-primary" (click)="onBack()">Back</button>
             <div class="form-group">
             </div>
-            <button class="btn btn-primary" (click)="saveForm()">Save</button>
+            <!-- <button class="btn btn-primary" (click)="saveForm()">Save</button> -->
         </div>
     </div>
 </div>
