@@ -11,9 +11,7 @@
             <div class="form-group">
                 <select formControlName="month" id="month" class="form-control" (change)="onChangeExpense($event)">
                     <option value="" disabled>Select Month</option>
-                    <option value="January">January</option>
-                    <option value="February">February</option>
-                    <option value="March">March</option>
+                    <option *ngFor="let month of getUniqueMonths()" [value]="month">{{ month }}</option>
                 </select>
             </div>
             <div class="form-group">
@@ -23,21 +21,20 @@
             </div>
             <div class="form-group">
                 <label for="expenseType">Expense Type:</label>
-                <select formControlName="expenseType" id="expenseType" class="form-control"
+                <select formControlName="source" id="expenseType" class="form-control"
                     [class.disabled-dropdown]="!monthSelected">
                     <option value="" disabled>Select Expense Type</option>
-                    <option value="Rent">Rent</option>
-                    <option value="Groceries">Groceries</option>
-                    <option value="Utilities">Utilities</option>
+                    <option *ngFor="let category of budgetExpenseCategories" [value]="category.id">{{ category.name }}
+                    </option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="expenseAmount">Amount:</label>
-                <input type="number" formControlName="expenseAmount" id="expenseAmount" class="form-control"
+                <input type="number" formControlName="amount" id="expenseAmount" class="form-control"
                     placeholder="Enter amount" [class.disabled-dropdown]="!monthSelected">
             </div>
-            <button type="submit" class="btn btn-primary" (click)="onSubmitExpense()"
-                [class.disabled-dropdown]="!monthSelected">Add Expense</button>
+            <button type="submit" class="btn btn-primary" [class.disabled-dropdown]="!monthSelected">Add
+                Expense</button>
         </form>
         <hr>
         <h3>Expense List - {{ selectedMonth }}</h3>
@@ -51,28 +48,11 @@
             </thead>
             <tbody>
                 <tr *ngFor="let expense of getFilteredExpenses()">
-                    <td *ngIf="!expense.editing">{{ expense.expenseType }}</td>
-                    <td *ngIf="!expense.editing">{{ expense.expenseAmount }}</td>
-                    <td *ngIf="!expense.editing" class="btn-actions">
-                        <button class="btn btn-sm btn-primary mr-2" (click)="editExpense(expense)">Edit</button>
+                    <td>{{ getSourceById(expense.budgetCategory) }}</td>
+                    <td>{{ expense.amount }}</td>
+                    <td class="btn-actions">
                         <button class="btn btn-sm btn-danger" (click)="deleteExpense(expense)">Delete</button>
                     </td>
-                    <td *ngIf="expense.editing">
-                        <select formControlName="expenseType" class="form-control">
-                            <option value="Rent">Rent</option>
-                            <option value="Groceries">Groceries</option>
-                            <option value="Utilities">Utilities</option>
-                        </select>
-                    </td>
-                    <td *ngIf="expense.editing">
-                        <input type="number" formControlName="expenseAmount" class="form-control"
-                            placeholder="Enter amount">
-                    </td>
-                    <td *ngIf="expense.editing" class="btn-actions">
-                        <button class="btn btn-sm btn-primary mr-2" (click)="saveExpense(expense)">Save</button>
-                        <button class="btn btn-sm btn-secondary" (click)="cancelEdit(expense)">Cancel</button>
-                    </td>
-
                 </tr>
             </tbody>
         </table>

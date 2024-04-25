@@ -4,54 +4,56 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { SideNavComponent } from '../side-nav/side-nav.component';
+import { items } from '../../testDB';
 
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule,MatIconModule,SideNavComponent],
+  imports: [ReactiveFormsModule, CommonModule, MatIconModule, SideNavComponent],
   templateUrl: './history.component.html',
-  styleUrl: './history.component.scss'
+  styleUrl: './history.component.scss',
 })
 export class HistoryComponent {
   todoForm: any;
   selectedMonth: string;
-  expenses: { month: string, expenseAmount: number }[] = [
-    { month: 'January', expenseAmount: 1500 },
-    { month: 'February', expenseAmount: 2000 },
-    { month: 'March', expenseAmount: 1800 }
-  ];
+  items: any[] = items;
   monthSelected: boolean = false;
-  januaryExpense: any[] = [
-    { expenseType: 'Recharge', expenseAmount: 1000 },
-    { expenseType: 'Light Bills', expenseAmount: 500 },
-  ];
-  februaryExpense: any[] = [
-    { expenseType: 'Essentials', expenseAmount: 200 },
-    { expenseType: 'Light Bills', expenseAmount: 400 }
-  ];
-  marchExpense: any[] = [
-    { expenseType: 'Recharge', expenseAmount: 1100 },
-    { expenseType: 'Essentials', expenseAmount: 250 }
+  budgetCategories: { id: number; name: string }[] = [
+    { id: 1, name: 'Salary' },
+    { id: 2, name: 'Freelancing' },
+    { id: 3, name: 'Rental Income' },
+    { id: 4, name: 'Rent' },
+    { id: 5, name: 'Gloceries' },
+    { id: 6, name: 'Utilities' },
   ];
 
   constructor(private fb: FormBuilder, private router: Router) {
-    this.selectedMonth = new Date().toLocaleString('default', { month: 'long' });
+    this.selectedMonth = new Date().toLocaleString('default', {
+      month: 'long',
+    });
   }
 
   ngOnInit(): void {
     this.todoForm = this.fb.group({
       month: ['', Validators.required],
       expenseType: ['', Validators.required],
-      expenseAmount: ['', Validators.required]
+      expenseAmount: ['', Validators.required],
     });
   }
 
-  onSubmitExpense() {
-    if (this.todoForm.valid) {
-      const newExpense = this.todoForm.value;
-      this.getFilteredExpenses().push(newExpense);
-      this.todoForm.reset();
+  getExpensesForMonth(month: string): any[] {
+    return this.items.filter((item) => {
+      const date = new Date(item.date);
+      const itemMonth = date.toLocaleString('default', { month: 'long' });
+      return itemMonth === month;
+    });
+  }
+
+  getFilteredExpenses() {
+    if (!this.monthSelected || this.selectedMonth === 'Year') {
+      return this.items;
     }
+    return this.getExpensesForMonth(this.selectedMonth);
   }
 
   onChangeExpense(event: any) {
@@ -60,32 +62,56 @@ export class HistoryComponent {
     this.getFilteredExpenses();
   }
 
-  getFilteredExpenses() {
-    switch (this.selectedMonth) {
-      case 'January':
-        return this.januaryExpense;
-      case 'February':
-        return this.februaryExpense;
-      case 'March':
-        return this.marchExpense;
-      default:
-        return [];
-    }
+  getUniqueMonths(): string[] {
+    const monthsSet = new Set<string>();
+    items.forEach((item) => {
+      const date = new Date(item.date);
+      const month = date.toLocaleString('default', { month: 'long' });
+      monthsSet.add(month);
+    });
+    return ['Year', ...Array.from(monthsSet)];
   }
 
   calculateTotalExpense(month: string): number {
-    return this.getFilteredExpenses().reduce((acc, curr) => acc + curr.expenseAmount, 0);
-  }
-
-  onSave() {
-    if (this.todoForm.valid) {
-      this.todoForm.reset({ month: this.selectedMonth });
-      this.getFilteredExpenses();
+    let totalExpense = 0;
+    if (!this.monthSelected || month === 'Year') {
+      for (const expense of this.items) {
+        if (expense.income) {
+          totalExpense += expense.amount;
+        } else {
+          totalExpense -= expense.amount;
+        }
+      }
+    } else {
+      const expenses = this.getExpensesForMonth(month);
+      for (const expense of expenses) {
+        if (expense.income) {
+          totalExpense += expense.amount;
+        } else {
+          totalExpense -= expense.amount;
+        }
+      }
     }
+    return totalExpense;
   }
 
-  saveForm() {
-    console.log("Form saved!");
+  getSourceById(id: number): string {
+    switch (id) {
+      case 1:
+        return 'Salary';
+      case 2:
+        return 'Freelancing';
+      case 3:
+        return 'Rental Income';
+      case 4:
+        return 'Rent';
+      case 5:
+        return 'Glories';
+      case 6:
+        return 'Utilities';
+      default:
+        return 'Unknown';
+    }
   }
 
   onBack() {

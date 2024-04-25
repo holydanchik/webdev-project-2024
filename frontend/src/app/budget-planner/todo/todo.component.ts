@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { Expense } from '../expense/expense.component';
 
 @Component({
   selector: 'app-todo',
@@ -21,17 +20,17 @@ export class TodoComponent {
     { month: 'March', expenseAmount: 1800 },
   ];
   monthSelected: boolean = false;
-  januaryExpense: Expense[] = [
+  januaryExpense: any[] = [
     { expenseType: 'Recharge', expenseAmount: 1000, editing: false },
     { expenseType: 'Light Bills', expenseAmount: 500, editing: false },
   ];
 
-  februaryExpense: Expense[] = [
+  februaryExpense: any[] = [
     { expenseType: 'Essentials', expenseAmount: 200 },
     { expenseType: 'Light Bills', expenseAmount: 400 },
   ];
 
-  marchExpense: Expense[] = [
+  marchExpense: any[] = [
     { expenseType: 'Recharge', expenseAmount: 1100 },
     { expenseType: 'Essentials', expenseAmount: 250 },
   ];
@@ -83,7 +82,7 @@ export class TodoComponent {
   }
 
   getFilteredExpenses() {
-    let filteredExpense: Expense[] = [];
+    let filteredExpense: any[] = [];
     switch (this.selectedMonth) {
       case 'January':
         filteredExpense = [...this.januaryExpense];
@@ -100,23 +99,23 @@ export class TodoComponent {
     return filteredExpense;
   }
 
-  editTodo(todo: Expense) {
+  editTodo(todo: any) {
     todo.editing = true;
     todo.backup = {...todo};
   }
 
-  saveTodo(todo: Expense) {
+  saveTodo(todo: any) {
     todo.editing = false;
     delete todo.backup;
   }
 
-  cancelEdit(todo: Expense) {
+  cancelEdit(todo: any) {
     todo.editing = false;
     Object.assign(todo, todo.backup)
     delete todo.backup
   }
 
-  deleteTodo(todo: Expense) {
+  deleteTodo(todo: any) {
     const filteredExpenses = this.getFilteredExpenses();
     const index = filteredExpenses.indexOf(todo);
     if (index !== -1) {
@@ -132,7 +131,7 @@ export class TodoComponent {
     return totalExpense;
   }
 
-  gettodoFormonth(month: string): Expense[] {
+  gettodoFormonth(month: string): any[] {
     switch (month) {
       case 'January':
         return this.januaryExpense;

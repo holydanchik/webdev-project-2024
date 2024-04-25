@@ -3,13 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-
-export interface Expense {
-  expenseType: string;
-  expenseAmount: number;
-  editing?: boolean;
-  backup?: Expense;
-}
+import { expenseItems } from '../../testDB';
 
 @Component({
   selector: 'app-expense',
@@ -20,24 +14,13 @@ export interface Expense {
 })
 export class ExpenseComponent {
   expenseForm: any;
-  selectedMonth: string;
-  expenses: { month: string; expenseAmount: number }[] = [
-    { month: 'January', expenseAmount: 1500 },
-    { month: 'February', expenseAmount: 2000 },
-    { month: 'March', expenseAmount: 1800 },
-  ];
+  selectedMonth: string = '';
+  budgetItems: any[] = expenseItems;
   monthSelected: boolean = false;
-  januaryExpense: Expense[] = [
-    { expenseType: 'Rent', expenseAmount: 1000 },
-    { expenseType: 'Groceries', expenseAmount: 500 },
-  ];
-  februaryExpense: Expense[] = [
-    { expenseType: 'Utilities', expenseAmount: 200 },
-    { expenseType: 'Groceries', expenseAmount: 400 },
-  ];
-  marchExpense: Expense[] = [
-    { expenseType: 'Rent', expenseAmount: 1100 },
-    { expenseType: 'Utilities', expenseAmount: 250 },
+  budgetExpenseCategories: { id: number; name: string }[] = [
+    { id: 4, name: 'Rent' },
+    { id: 5, name: 'Gloceries' },
+    { id: 6, name: 'Utilities' },
   ];
 
   constructor(private fb: FormBuilder, private router: Router) {
@@ -49,16 +32,30 @@ export class ExpenseComponent {
   ngOnInit(): void {
     this.expenseForm = this.fb.group({
       month: ['', Validators.required],
-      expenseType: ['', Validators.required],
-      expenseAmount: ['', Validators.required],
+      source: ['', Validators.required],
+      amount: ['', Validators.required],
     });
   }
 
   onSubmitExpense() {
     if (this.expenseForm.valid) {
-      const newExpense = this.expenseForm.value;
-      this.getFilteredExpenses().push(newExpense);
+      const newExpense = {
+        amount: this.expenseForm.value.amount,
+        date: this.selectedMonth,
+        income: false,
+        budgetCategory: +this.expenseForm.value.source,
+      };
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth() + 1;
+      const day = today.getDate();
+      const formattedMonth = month < 10 ? '0' + month : '' + month;
+      const formattedDay = day < 10 ? '0' + day : '' + day;
+      newExpense.date = `${year}-${formattedMonth}-${formattedDay}`;
+      this.budgetItems.push(newExpense);
+      console.log(newExpense);
       this.expenseForm.reset();
+      this.getFilteredExpenses();
     }
   }
 
@@ -68,36 +65,42 @@ export class ExpenseComponent {
     this.getFilteredExpenses();
   }
 
-  getFilteredExpenses() {
-    switch (this.selectedMonth) {
-      case 'January':
-        return this.januaryExpense;
-      case 'February':
-        return this.februaryExpense;
-      case 'March':
-        return this.marchExpense;
+  getUniqueMonths(): string[] {
+    const monthsSet = new Set<string>();
+    expenseItems.forEach((item) => {
+      const date = new Date(item.date);
+      const month = date.toLocaleString('default', { month: 'long' });
+      monthsSet.add(month);
+    });
+    return Array.from(monthsSet);
+  }
+
+  getSourceById(id: number): string {
+    switch (id) {
+      case 4:
+        return 'Rent';
+      case 5:
+        return 'Glories';
+      case 6:
+        return 'Utilities';
       default:
-        return [];
+        return 'Unknown';
     }
   }
 
-  editExpense(expense: Expense) {
-    expense.editing = true;
-    expense.backup = { ...expense };
+  getExpensesForMonth(month: string): any[] {
+    return this.budgetItems.filter((item) => {
+      const date = new Date(item.date);
+      const itemMonth = date.toLocaleString('default', { month: 'long' });
+      return itemMonth === month;
+    });
   }
 
-  saveExpense(expense: Expense) {
-    expense.editing = false;
-    delete expense.backup;
+  getFilteredExpenses() {
+    return this.getExpensesForMonth(this.selectedMonth);
   }
 
-  cancelEdit(expense: Expense) {
-    expense.editing = false;
-    Object.assign(expense, expense.backup);
-    delete expense.backup;
-  }
-
-  deleteExpense(expense: Expense) {
+  deleteExpense(expense: any) {
     const index = this.getFilteredExpenses().indexOf(expense);
     if (index !== -1) {
       this.getFilteredExpenses().splice(index, 1);
@@ -105,10 +108,12 @@ export class ExpenseComponent {
   }
 
   calculateTotalExpense(month: string): number {
-    return this.getFilteredExpenses().reduce(
-      (acc, curr) => acc + curr.expenseAmount,
-      0
-    );
+    let totalExpense = 0;
+    const expenses = this.getExpensesForMonth(month);
+    for (const expense of expenses) {
+      totalExpense += expense.amount;
+    }
+    return totalExpense;
   }
 
   // saveForm() {

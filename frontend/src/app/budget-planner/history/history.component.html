@@ -2,13 +2,23 @@
 <div class="main-container">
     <div class="container">
         <h2>Transaction History</h2>
-        <form [formGroup]="todoForm" (ngSubmit)="onSubmitExpense()" class="input-form">
+        <form [formGroup]="todoForm" class="input-form">
             <div class="form-group">
                 <select formControlName="month" id="month" class="form-control" (change)="onChangeExpense($event)">
                     <option value="" disabled>Select Month</option>
+                    <option value="Year">Year</option>
                     <option value="January">January</option>
                     <option value="February">February</option>
                     <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
                 </select>
             </div>
             <div class="form-group">
@@ -27,9 +37,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let todoTrans of getFilteredExpenses()">
-                    <td>{{ todoTrans.expenseType }}</td>
-                    <td>{{ todoTrans.expenseAmount }}</td>
+                <tr *ngFor="let history of getFilteredExpenses()" [style.color]="history.income ? 'green' : 'red'">
+                    <td>{{ getSourceById(history.budgetCategory) }}</td>
+                    <td>{{ history.amount }}</td>
                 </tr>
             </tbody>
         </table>

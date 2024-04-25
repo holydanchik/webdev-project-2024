@@ -1,7 +1,5 @@
 <div class="navbar">
-    <h2>
-        INCOME
-    </h2>
+    <h2>INCOME</h2>
 </div>
 
 <div class="main-container">
@@ -11,9 +9,7 @@
             <div class="form-group">
                 <select formControlName="month" id="month" class="form-control" (change)="onChange($event)">
                     <option value="" disabled>Select Month</option>
-                    <option value="January">January</option>
-                    <option value="February">February</option>
-                    <option value="March">March</option>
+                    <option *ngFor="let month of getUniqueMonths()" [value]="month">{{ month }}</option>
                 </select>
             </div>
             <div class="form-group">
@@ -26,9 +22,7 @@
                 <select formControlName="source" id="source" class="form-control"
                     [class.disabled-dropdown]="!monthSelected">
                     <option value="" disabled>Select Source</option>
-                    <option value="Salary">Salary</option>
-                    <option value="Freelancing">Freelancing</option>
-                    <option value="Rental Income">Rental Income</option>
+                    <option *ngFor="let category of budgetCategories" [value]="category.id">{{ category.name }}</option>
                 </select>
             </div>
             <div class="form-group">
@@ -51,36 +45,17 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let income of getFilteredIncomes(); let i = index">
-                    <td *ngIf="!income.editing">{{ income.source }}</td>
-                    <td *ngIf="!income.editing">{{ income.amount }}</td>
-                    <td *ngIf="!income.editing" class="btn-actions">
-                        <button class="btn btn-sm btn-primary mr-2" (click)="editIncome(income)">Edit</button>
+                <tr *ngFor="let income of getFilteredIncomes()">
+                    <td>{{ getSourceById(income.budgetCategory) }}</td>
+                    <td>{{ income.amount }}</td>
+                    <td class="btn-actions">
                         <button class="btn btn-sm btn-danger" (click)="deleteIncome(income)">Delete</button>
                     </td>
-                    <td *ngIf="income.editing">
-                        <select formControlName="source" class="form-control">
-                            <option value="Salary">Salary</option>
-                            <option value="Freelancing">Freelancing</option>
-                            <option value="Rental Income">Rental Income</option>
-                        </select>
-                    </td>
-                    <td *ngIf="income.editing">
-                        <input type="number" formControlName="amount" class="form-control" placeholder="Enter amount">
-                    </td>
-                    <td *ngIf="income.editing" class="btn-actions">
-                        <button class="btn btn-sm btn-primary mr-2" (click)="saveIncome(income)">Save</button>
-                        <button class="btn btn-sm btn-secondary" (click)="cancelEdit(income)">Cancel</button>
-                    </td>
-
                 </tr>
             </tbody>
         </table>
         <div class="input-form">
             <button class="btn btn-primary" (click)="onBack()">Back</button>
-            <div class="form-group">
-            </div>
-            <!-- <button class="btn btn-primary" (click)="saveForm()">Save</button> -->
         </div>
     </div>
 </div>
